@@ -13,18 +13,14 @@ class MovieController extends Controller
         $apiKey = '37b0555d';
         $client = new Client();
 
-        // Pagination setup
         $page = $request->input('page', 1);
-        $moviesPerPage = 10; // Number of movies per page
+        $moviesPerPage = 10;
+        $searchQuery = $request->input('search', 'movie');
 
-        // Get search query from request
-        $searchQuery = $request->input('search', 'movie'); // Default search term
-
-        // Fetching movies from OMDb API with pagination
         $response = $client->get("http://www.omdbapi.com/", [
             'query' => [
-                's' => $searchQuery, // Search for movies based on input
-                'page' => $page, // Use requested page
+                's' => $searchQuery,
+                'page' => $page,
                 'apikey' => $apiKey,
             ]
         ]);
@@ -32,16 +28,11 @@ class MovieController extends Controller
         $data = json_decode($response->getBody()->getContents(), true);
         $movies = isset($data['Search']) ? $data['Search'] : [];
 
-        // If no movies found
-        if (empty($movies)) {
-            return view('movies.index', ['movies' => [], 'totalPages' => 0, 'page' => 1, 'search' => $searchQuery]);
+        if ($page == 1) {
+            return view('movies.index', compact('movies', 'searchQuery'));
         }
 
-        // Total results for pagination
-        $totalResults = (int) $data['totalResults'] ?? 0;
-        $totalPages = ceil($totalResults / $moviesPerPage); // Calculate total pages
-
-        return view('movies.index', compact('movies', 'totalPages', 'page', 'searchQuery'));
+        return response()->json($movies);
     }
 
     public function show($id)
