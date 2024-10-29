@@ -13,6 +13,7 @@
                         <div class="card-body">
                             <h5 class="card-title">{{ $movie['Title'] }}</h5>
                             <p class="card-text"><strong>Year:</strong> {{ $movie['Year'] ?? 'N/A' }}</p>
+                            <button class="btn btn-primary add-favorite" data-id="{{ $movie['imdbID'] }}">Add to Favorites</button>
                         </div>
                     </div>
                 </div>
@@ -35,12 +36,41 @@
                 },
                 success: function(response) {
                     alert('Movie added to favorites!');
+                    const button = $(`.add-favorite[data-id='${movieId}']`);
+                    button.removeClass('btn-primary add-favorite').addClass('btn-danger remove-favorite').text('Remove from Favorites');
+
+                    button.off('click').on('click', function() {
+                        removeFavorite(movieId);
+                    });
                 },
                 error: function(xhr) {
                     alert('Error adding movie to favorites: ' + xhr.responseText);
                 }
             });
         });
+
+        function removeFavorite(movieId) {
+            $.ajax({
+                url: `/movies/${movieId}/remove-favorite`,
+                method: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    imdbID: movieId
+                },
+                success: function(response) {
+                    alert('Movie removed from favorites!');
+                    const button = $(`.remove-favorite[data-id='${movieId}']`);
+                    button.removeClass('btn-danger remove-favorite').addClass('btn-primary add-favorite').text('Add to Favorites');
+
+                    button.off('click').on('click', function() {
+                        addFavorite(movieId);
+                    });
+                },
+                error: function(xhr) {
+                    alert('Error removing movie from favorites: ' + xhr.responseText);
+                }
+            });
+        }
 
         // Logika infinite scroll
         let page = 1;
@@ -66,11 +96,12 @@
                                     <div class="col-md-3 mb-4 movie-card">
                                         <div class="card">
                                             <a href="/movies/${movie.imdbID}">
-                                                <img src="${movie.Poster}" class="card-img-top" alt="${movie.Title} Poster">
+                                                <img src="${movie.Poster}" class="card-img-top" alt="${movie.Title} Poster" loading="lazy">
                                             </a>
                                             <div class="card-body">
                                                 <h5 class="card-title">${movie.Title}</h5>
                                                 <p class="card-text"><strong>Year:</strong> ${movie.Year || 'N/A'}</p>
+                                                <button class="btn btn-primary add-favorite" data-id="${movie.imdbID}">Add to Favorites</button>
                                             </div>
                                         </div>
                                     </div>
