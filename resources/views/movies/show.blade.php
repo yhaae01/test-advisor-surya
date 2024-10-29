@@ -2,6 +2,7 @@
 
 @section('content')
 <div class="container">
+    {{-- <a href="{{ route('movies.index') }}" class="btn btn-secondary">Back to Movie List</a> --}}
     <h1>{{ $movie['Title'] }}</h1>
     <img src="{{ $movie['Poster'] }}" alt="{{ $movie['Title'] }} Poster" loading="lazy" class="img-fluid mb-3">
     
@@ -12,7 +13,6 @@
     <p><strong>Actors:</strong> {{ $movie['Actors'] ?? 'N/A' }}</p>
 
     <button class="btn btn-primary add-favorite" data-id="{{ $movie['imdbID'] }}">Add to Favorites</button>
-    <a href="{{ route('movies.index') }}" class="btn btn-secondary">Back to Movie List</a>
 </div>
 
 <script>

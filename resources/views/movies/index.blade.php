@@ -3,6 +3,11 @@
 @section('content')
     <div class="container">
         <h1>Movie List</h1>
+        @if(session('error'))
+            <div class="alert alert-danger">
+                {{ session('error') }}
+            </div>
+        @endif
         <div class="row" id="movie-list">
             @foreach ($movies as $movie)
                 <div class="col-md-3 mb-4 movie-card">

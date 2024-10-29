@@ -40,19 +40,27 @@ class MovieController extends Controller
         $apiKey = '37b0555d';
         $client = new Client();
 
-        // Fetching movie details from OMDb API
-        $response = $client->get("http://www.omdbapi.com/", [
-            'query' => [
-                'i' => $id, // Use the IMDB ID to get movie details
-                'apikey' => $apiKey,
-            ]
-        ]);
+        try {
+            $response = $client->get("http://www.omdbapi.com/", [
+                'query' => [
+                    'i' => $id,
+                    'apikey' => $apiKey,
+                ]
+            ]);
 
-        $movieDetails = json_decode($response->getBody()->getContents(), true);
+            $movieDetails = json_decode($response->getBody()->getContents(), true);
 
-        // Return the view for movie details
-        return view('movies.show', ['movie' => $movieDetails]);
+            // Check if the movie was found
+            if (isset($movieDetails['Response']) && $movieDetails['Response'] === 'True') {
+                return view('movies.show', ['movie' => $movieDetails]);
+            } else {
+                return redirect()->route('movies.index')->with('error', 'Movie not found!');
+            }
+        } catch (\Exception $e) {
+            return redirect()->route('movies.index')->with('error', 'An error occurred while fetching movie details. Please try again later.');
+        }
     }
+
 
     public function favorites()
     {
