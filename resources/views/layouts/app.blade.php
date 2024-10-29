@@ -20,17 +20,14 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('movies.index') }}">Movie List</a>
+                        <a class="nav-link {{ request()->routeIs('movies.index') ? 'active' : '' }}" href="{{ route('movies.index') }}">Movie List</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('movies.favorites') }}">My Favorites</a>
+                        <a class="nav-link {{ request()->routeIs('movies.favorites') ? 'active' : '' }}" href="{{ route('movies.favorites') }}">My Favorites</a>
                     </li>
-
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('logout') }}">Sign Out</a>
                     </li>
-
-                    
                 </ul>
             </div>
         </div>
