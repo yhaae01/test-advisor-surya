@@ -14,6 +14,12 @@
             <div class="col-md-6">
                 <div class="card">
                     <div class="card-body">
+                        @if ($errors->has('username'))
+                            <div class="alert alert-danger">
+                                {{ $errors->first('username') }}
+                            </div>
+                        @endif
+                        
                         <form method="POST" action="{{ route('login') }}">
                             @csrf
 
