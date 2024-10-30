@@ -8,6 +8,31 @@
                 {{ session('error') }}
             </div>
         @endif
+
+        <!-- Form Search and filter -->
+        <form method="GET" action="{{ route('movies.index') }}" class="mb-4">
+            <div class="row">
+                <div class="col-md-4">
+                    <input type="text" name="search" class="form-control" placeholder="Search movies..." value="{{ request('search') }}">
+                </div>
+                <div class="col-md-3">
+                    <input type="number" name="year" class="form-control" placeholder="Year" value="{{ request('year') }}">
+                </div>
+                <div class="col-md-3">
+                    <select name="type" class="form-control">
+                        <option value="">All Types</option>
+                        <option value="movie" {{ request('type') == 'movie' ? 'selected' : '' }}>Movie</option>
+                        <option value="series" {{ request('type') == 'series' ? 'selected' : '' }}>Series</option>
+                        <option value="episode" {{ request('type') == 'episode' ? 'selected' : '' }}>Episode</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary w-100">Search</button>
+                </div>
+            </div>
+        </form>
+
+        <!-- List Movie -->
         <div class="row" id="movie-list">
             @foreach ($movies as $movie)
                 <div class="col-md-3 mb-4 movie-card">

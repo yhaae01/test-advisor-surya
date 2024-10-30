@@ -16,20 +16,35 @@ class MovieController extends Controller
         $page = $request->input('page', 1);
         $moviesPerPage = 10;
         $searchQuery = $request->input('search', 'movie');
+        if (empty($searchQuery)) {
+            $searchQuery = 'movie';
+        }
+        $year = $request->input('year');
+        $type = $request->input('type');
+
+        $queryParams = [
+            's' => $searchQuery,
+            'page' => $page,
+            'apikey' => $apiKey,
+        ];
+
+        if ($year) {
+            $queryParams['y'] = $year;
+        }
+
+        if ($type) {
+            $queryParams['type'] = $type;
+        }
 
         $response = $client->get("http://www.omdbapi.com/", [
-            'query' => [
-                's' => $searchQuery,
-                'page' => $page,
-                'apikey' => $apiKey,
-            ]
+            'query' => $queryParams
         ]);
-        
+
         $data = json_decode($response->getBody()->getContents(), true);
         $movies = isset($data['Search']) ? $data['Search'] : [];
 
         if ($page == 1) {
-            return view('movies.index', compact('movies', 'searchQuery'));
+            return view('movies.index', compact('movies', 'searchQuery', 'year', 'type'));
         }
 
         return response()->json($movies);
